@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Python Password Checker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="card">
+        <h1>ShieldCheck</h1>
+        <input type="password" id="pwdInput" placeholder="Type a password...">
+        
+        <div class="progress-bg">
+            <div id="progress-bar"></div>
+        </div>
+        
+        <div id="stats">
+            <p>Strength: <span id="strength-text">None</span></p>
+            <p id="feedback-text" style="color: #ffaa00; font-size: 0.8rem;"></p>
+        </div>
+
+        <button id="genBtn" class="generate-button">Generate Strong Password</button>
+    </div>
+
+    <script>
+        const input = document.getElementById('pwdInput');
+        const bar = document.getElementById('progress-bar');
+        const sText = document.getElementById('strength-text');
+        const fText = document.getElementById('feedback-text');
+        const genBtn = document.getElementById('genBtn');
+
+        // Logic for checking password strength
+        input.addEventListener('input', async () => {
+            const password = input.value;
+            const response = await fetch('http://127.0.0.1:5000/analyze', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password: password })
+            });
+            const data = await response.json();
+
+            // Update UI
+            sText.innerText = data.strength;
+            fText.innerText = data.feedback;
+            
+            // Map 0-4 score to percentage
+            const scoreMap = [10, 25, 50, 75, 100];
+            const colors = ["#ff4d4d", "#ff4d4d", "#ffa64d", "#99ff33", "#2eb82e"];
+            
+            bar.style.width = scoreMap[data.score] + "%";
+            bar.style.backgroundColor = colors[data.score];
+        });
+
+        // 2. ADD THIS GENERATOR LOGIC HERE
+        genBtn.addEventListener('click', async () => {
+            const response = await fetch('http://127.0.0.1:5000/generate');
+            const data = await response.json();
+            
+            input.value = data.password;
+            // This line tells the 'input' listener above to run automatically
+            input.dispatchEvent(new Event('input'));
+        });
+    </script>
+</body>
+</html>
