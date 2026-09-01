@@ -1,4 +1,4 @@
-Full-Stack Password Security & Entropy Analyzer
+## Full-Stack Password Security & Entropy Analyzer
 
 A lightweight, full-stack web application designed to evaluate password strength using realistic security metrics (entropy, dictionary checks, pattern matching) rather than arbitrary character-count rules. Includes a cryptographically secure random password generator.
 
